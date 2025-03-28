@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
 import pandas as pd
 import random
@@ -126,7 +126,7 @@ class RekomendasiRakitan:
 
 @app.route('/')
 def index():
-    return jsonify({"Terkoneksi": "Welcome to your Flask app 🚅"})
+    return jsonify({"Terkoneksi": "Welcome to your Flask app"})
 
 @app.route('/rekomendasi', methods=['POST'])
 def get_rekomendasi():
