@@ -128,8 +128,8 @@ class RekomendasiRakitan:
 def index():
     return jsonify({"Terkoneksi": "Welcome to your Flask app 🚅"})
 
-    @app.route('/rekomendasi', methods=['POST'])
-    def get_rekomendasi():
+@app.route('/rekomendasi', methods=['POST'])
+def get_rekomendasi():
         if request.content_type != 'application/json':
             return jsonify({"error": "Content-Type must be application/json"}), 415
 
