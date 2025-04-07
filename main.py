@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 app = Flask(__name__)
 
 class RekomendasiRakitan:
-    def __init__(self, komponen_df, pop_size=100, generations=500, budget=10000000):
+    def __init__(self, komponen_df, pop_size=100, generations=1000, budget=10000000):
         self.komponen_df = komponen_df
         self.pop_size = pop_size
         self.generations = generations
@@ -39,7 +39,8 @@ class RekomendasiRakitan:
         if total_harga > self.budget:
             return 0
         
-        return (total_performa_minmax * compatibility) / ((self.budget - total_harga) + 1)
+        # return (total_performa_minmax * compatibility) / ((self.budget - total_harga) + 1)
+        return (total_performa_minmax * compatibility)
 
     def check_compatibility(self, individual):
         cpu = individual.get('CPU')
@@ -51,9 +52,16 @@ class RekomendasiRakitan:
             return False
 
         soket_compatible = cpu['soket_komponen'] == motherboard['soket_komponen']
-        daya_cukup = psu['daya_komponen'] > (cpu['daya_komponen'] + gpu['daya_komponen'])
+        daya_cukup = psu['daya_komponen'] >= ((cpu['daya_komponen'] + gpu['daya_komponen']) * 1.4) #menambah 40 persen daya untuk stabilitas dan efisiensi PSU
 
-        return soket_compatible and daya_cukup
+         # menghitung rasio antara performa gpu dan cpu agar lebih seimbang
+        cpu_banchmark = cpu['performa_asli']
+        gpu_banchmark = gpu['performa_asli']
+
+        ratio = cpu_banchmark / gpu_banchmark
+        rasio_seimbang = 0.3 <= ratio <= 5  # Atur toleransi sesuai kebutuhan
+
+        return soket_compatible and daya_cukup and rasio_seimbang
 
     def crossover(self, parent1, parent2, crossover_rate=0.4):
         child = {}
