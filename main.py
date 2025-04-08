@@ -7,7 +7,7 @@ from sklearn.preprocessing import MinMaxScaler
 app = Flask(__name__)
 
 class RekomendasiRakitan:
-    def __init__(self, komponen_df, pop_size=100, generations=1000, budget=10000000):
+    def __init__(self, komponen_df, pop_size=100, generations=250, budget=10000000):
         self.komponen_df = komponen_df
         self.pop_size = pop_size
         self.generations = generations
@@ -101,17 +101,13 @@ class RekomendasiRakitan:
         best_generation = 0
         best_overall_individual = None
 
-        elit_size = 1
-
         for generation in range(self.generations):
             population = sorted(population, key=lambda ind: self.calculate_fitness(ind), reverse=True)
-            elites = population[:elit_size]
-
-            best_individual = elites[0]
+            best_individual = population[0]
             best_fitness = self.calculate_fitness(best_individual)
             total_harga = sum(comp['harga_komponen'] for comp in best_individual.values() if comp)
             total_performa = sum(comp['performa_komponen'] for comp in best_individual.values() if comp)
-
+            
             self.history.append({
                 "Generasi": generation + 1,
                 "Fitness": best_fitness,
@@ -124,18 +120,17 @@ class RekomendasiRakitan:
                 best_generation = generation + 1
                 best_overall_individual = best_individual
 
-            parents_pool = population[:self.pop_size // 2]
-            new_population = elites.copy()
-
-            while len(new_population) < self.pop_size:
-                parent1, parent2 = random.sample(parents_pool, 2)
+            population = population[:self.pop_size // 2]
+            new_population = [best_individual]
+            for _ in range(self.pop_size - 1):
+                parent1, parent2 = random.sample(population, 2)
                 child = self.crossover(parent1, parent2, crossover_rate=0.4)
                 child = self.mutate(child)
                 new_population.append(child)
 
             population = new_population
 
-        return best_overall_individual, best_overall_fitness, best_generation, pd.DataFrame(self.history)
+        return best_overall_individual, best_overall_fitness, best_generation, self.history
 
 @app.route('/')
 def index():
