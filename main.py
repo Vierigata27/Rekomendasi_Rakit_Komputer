@@ -95,43 +95,6 @@ class RekomendasiRakitan:
 
         return individual
 
-    # def run_genetic_algorithm(self):
-    #     population = [self.create_individual() for _ in range(self.pop_size)]
-    #     best_overall_fitness = 0
-    #     best_generation = 0
-    #     best_overall_individual = None
-
-    #     for generation in range(self.generations):
-    #         population = sorted(population, key=lambda ind: self.calculate_fitness(ind), reverse=True)
-    #         best_individual = population[0]
-    #         best_fitness = self.calculate_fitness(best_individual)
-    #         total_harga = sum(comp['harga_komponen'] for comp in best_individual.values() if comp)
-    #         total_performa = sum(comp['performa_komponen'] for comp in best_individual.values() if comp)
-            
-    #         self.history.append({
-    #             "Generasi": generation + 1,
-    #             "Fitness": best_fitness,
-    #             "Harga": total_harga,
-    #             "Performa": total_performa
-    #         })
-
-    #         if best_fitness > best_overall_fitness:
-    #             best_overall_fitness = best_fitness
-    #             best_generation = generation + 1
-    #             best_overall_individual = best_individual
-
-    #         population = population[:self.pop_size // 2]
-    #         new_population = [best_individual]
-    #         for _ in range(self.pop_size - 1):
-    #             parent1, parent2 = random.sample(population, 2)
-    #             child = self.crossover(parent1, parent2, crossover_rate=0.4)
-    #             child = self.mutate(child)
-    #             new_population.append(child)
-
-    #         population = new_population
-
-    #     return best_overall_individual, best_overall_fitness, best_generation, self.history
-
     def run_genetic_algorithm(self):
         population = [self.create_individual() for _ in range(self.pop_size)]
         best_overall_fitness = 0
